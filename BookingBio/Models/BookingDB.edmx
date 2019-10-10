@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BookingDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AllSeats">
+          <Key>
+            <PropertyRef Name="allSeatsId" />
+          </Key>
+          <Property Name="allSeatsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="loungeId" Type="int" Nullable="false" />
+          <Property Name="rowNumber" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="seatNumber" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Bookings">
+          <Key>
+            <PropertyRef Name="bookingId" />
+          </Key>
+          <Property Name="bookingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="customerId" Type="int" />
+          <Property Name="bookingForDate" Type="datetime" />
+          <Property Name="bookingMadeDate" Type="datetime" />
+          <Property Name="allSeatsId" Type="int" />
+        </EntityType>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="customerId" />
+          </Key>
+          <Property Name="customerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="email" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Lounges">
+          <Key>
+            <PropertyRef Name="loungeId" />
+          </Key>
+          <Property Name="loungeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="seatCount" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Movies">
+          <Key>
+            <PropertyRef Name="movieId" />
+          </Key>
+          <Property Name="movieId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="movieName" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="performanceId" Type="int" />
+        </EntityType>
+        <EntityType Name="MovieShowings">
+          <Key>
+            <PropertyRef Name="movieShowingsId" />
+          </Key>
+          <Property Name="movieShowingsId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="loungeId" Type="int" />
+          <Property Name="movieId" Type="int" />
+          <Property Name="showingFromDate" Type="datetime" />
+          <Property Name="showToDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="PerformanceNumbers">
+          <Key>
+            <PropertyRef Name="performanceId" />
+          </Key>
+          <Property Name="performanceId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="startTime" Type="datetime" />
+          <Property Name="endTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="UserAccounts">
+          <Key>
+            <PropertyRef Name="userAccountId" />
+          </Key>
+          <Property Name="userAccountId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="accountName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="accountPassword" Type="nvarchar" MaxLength="400" Nullable="false" />
+          <Property Name="customerId" Type="int" />
+          <Property Name="customerName" Type="varchar" MaxLength="255" />
+          <Property Name="phoneNumber" Type="varchar" MaxLength="50" />
+          <Property Name="salt" Type="varchar" MaxLength="400" />
+        </EntityType>
+        <Association Name="FK__AllSeats__lounge__48CFD27E">
+          <End Role="Lounges" Type="Self.Lounges" Multiplicity="1" />
+          <End Role="AllSeats" Type="Self.AllSeats" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lounges">
+              <PropertyRef Name="loungeId" />
+            </Principal>
+            <Dependent Role="AllSeats">
+              <PropertyRef Name="loungeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Bookings__allSea__49C3F6B7">
+          <End Role="AllSeats" Type="Self.AllSeats" Multiplicity="0..1" />
+          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AllSeats">
+              <PropertyRef Name="allSeatsId" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="allSeatsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Bookings__custom__47DBAE45">
+          <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="customerId" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="customerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Movies__performa__59063A47">
+          <End Role="PerformanceNumbers" Type="Self.PerformanceNumbers" Multiplicity="0..1" />
+          <End Role="Movies" Type="Self.Movies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PerformanceNumbers">
+              <PropertyRef Name="performanceId" />
+            </Principal>
+            <Dependent Role="Movies">
+              <PropertyRef Name="performanceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovieShow__loung__4AB81AF0">
+          <End Role="Lounges" Type="Self.Lounges" Multiplicity="0..1" />
+          <End Role="MovieShowings" Type="Self.MovieShowings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lounges">
+              <PropertyRef Name="loungeId" />
+            </Principal>
+            <Dependent Role="MovieShowings">
+              <PropertyRef Name="loungeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovieShow__movie__4BAC3F29">
+          <End Role="Movies" Type="Self.Movies" Multiplicity="0..1" />
+          <End Role="MovieShowings" Type="Self.MovieShowings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movies">
+              <PropertyRef Name="movieId" />
+            </Principal>
+            <Dependent Role="MovieShowings">
+              <PropertyRef Name="movieId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserAccou__custo__4CA06362">
+          <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+          <End Role="UserAccounts" Type="Self.UserAccounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="customerId" />
+            </Principal>
+            <Dependent Role="UserAccounts">
+              <PropertyRef Name="customerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BookingDBModelStoreContainer">
+          <EntitySet Name="AllSeats" EntityType="Self.AllSeats" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Bookings" EntityType="Self.Bookings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customers" EntityType="Self.Customers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Lounges" EntityType="Self.Lounges" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Movies" EntityType="Self.Movies" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MovieShowings" EntityType="Self.MovieShowings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PerformanceNumbers" EntityType="Self.PerformanceNumbers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserAccounts" EntityType="Self.UserAccounts" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__AllSeats__lounge__48CFD27E" Association="Self.FK__AllSeats__lounge__48CFD27E">
+            <End Role="Lounges" EntitySet="Lounges" />
+            <End Role="AllSeats" EntitySet="AllSeats" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Bookings__allSea__49C3F6B7" Association="Self.FK__Bookings__allSea__49C3F6B7">
+            <End Role="AllSeats" EntitySet="AllSeats" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Bookings__custom__47DBAE45" Association="Self.FK__Bookings__custom__47DBAE45">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Movies__performa__59063A47" Association="Self.FK__Movies__performa__59063A47">
+            <End Role="PerformanceNumbers" EntitySet="PerformanceNumbers" />
+            <End Role="Movies" EntitySet="Movies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovieShow__loung__4AB81AF0" Association="Self.FK__MovieShow__loung__4AB81AF0">
+            <End Role="Lounges" EntitySet="Lounges" />
+            <End Role="MovieShowings" EntitySet="MovieShowings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovieShow__movie__4BAC3F29" Association="Self.FK__MovieShow__movie__4BAC3F29">
+            <End Role="Movies" EntitySet="Movies" />
+            <End Role="MovieShowings" EntitySet="MovieShowings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserAccou__custo__4CA06362" Association="Self.FK__UserAccou__custo__4CA06362">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="UserAccounts" EntitySet="UserAccounts" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BookingDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AllSeats">
+          <Key>
+            <PropertyRef Name="allSeatsId" />
+          </Key>
+          <Property Name="allSeatsId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="loungeId" Type="Int32" Nullable="false" />
+          <Property Name="rowNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="seatNumber" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Lounges" Relationship="Self.FK__AllSeats__lounge__48CFD27E" FromRole="AllSeats" ToRole="Lounges" />
+          <NavigationProperty Name="Bookings" Relationship="Self.FK__Bookings__allSea__49C3F6B7" FromRole="AllSeats" ToRole="Bookings" />
+        </EntityType>
+        <EntityType Name="Bookings">
+          <Key>
+            <PropertyRef Name="bookingId" />
+          </Key>
+          <Property Name="bookingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="customerId" Type="Int32" />
+          <Property Name="bookingForDate" Type="DateTime" Precision="3" />
+          <Property Name="bookingMadeDate" Type="DateTime" Precision="3" />
+          <Property Name="allSeatsId" Type="Int32" />
+          <NavigationProperty Name="AllSeats" Relationship="Self.FK__Bookings__allSea__49C3F6B7" FromRole="Bookings" ToRole="AllSeats" />
+          <NavigationProperty Name="Customers" Relationship="Self.FK__Bookings__custom__47DBAE45" FromRole="Bookings" ToRole="Customers" />
+        </EntityType>
+        <EntityType Name="Customers">
+          <Key>
+            <PropertyRef Name="customerId" />
+          </Key>
+          <Property Name="customerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Bookings" Relationship="Self.FK__Bookings__custom__47DBAE45" FromRole="Customers" ToRole="Bookings" />
+          <NavigationProperty Name="UserAccounts" Relationship="Self.FK__UserAccou__custo__4CA06362" FromRole="Customers" ToRole="UserAccounts" />
+        </EntityType>
+        <EntityType Name="Lounges">
+          <Key>
+            <PropertyRef Name="loungeId" />
+          </Key>
+          <Property Name="loungeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="seatCount" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AllSeats" Relationship="Self.FK__AllSeats__lounge__48CFD27E" FromRole="Lounges" ToRole="AllSeats" />
+          <NavigationProperty Name="MovieShowings" Relationship="Self.FK__MovieShow__loung__4AB81AF0" FromRole="Lounges" ToRole="MovieShowings" />
+        </EntityType>
+        <EntityType Name="Movies">
+          <Key>
+            <PropertyRef Name="movieId" />
+          </Key>
+          <Property Name="movieId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="movieName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="performanceId" Type="Int32" />
+          <NavigationProperty Name="PerformanceNumbers" Relationship="Self.FK__Movies__performa__59063A47" FromRole="Movies" ToRole="PerformanceNumbers" />
+          <NavigationProperty Name="MovieShowings" Relationship="Self.FK__MovieShow__movie__4BAC3F29" FromRole="Movies" ToRole="MovieShowings" />
+        </EntityType>
+        <EntityType Name="MovieShowings">
+          <Key>
+            <PropertyRef Name="movieShowingsId" />
+          </Key>
+          <Property Name="movieShowingsId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="loungeId" Type="Int32" />
+          <Property Name="movieId" Type="Int32" />
+          <Property Name="showingFromDate" Type="DateTime" Precision="3" />
+          <Property Name="showToDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Lounges" Relationship="Self.FK__MovieShow__loung__4AB81AF0" FromRole="MovieShowings" ToRole="Lounges" />
+          <NavigationProperty Name="Movies" Relationship="Self.FK__MovieShow__movie__4BAC3F29" FromRole="MovieShowings" ToRole="Movies" />
+        </EntityType>
+        <EntityType Name="PerformanceNumbers">
+          <Key>
+            <PropertyRef Name="performanceId" />
+          </Key>
+          <Property Name="performanceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="startTime" Type="DateTime" Precision="3" />
+          <Property Name="endTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Movies" Relationship="Self.FK__Movies__performa__59063A47" FromRole="PerformanceNumbers" ToRole="Movies" />
+        </EntityType>
+        <EntityType Name="UserAccounts">
+          <Key>
+            <PropertyRef Name="userAccountId" />
+          </Key>
+          <Property Name="userAccountId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="accountName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="accountPassword" Type="String" MaxLength="400" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="customerId" Type="Int32" />
+          <Property Name="customerName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="phoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="salt" Type="String" MaxLength="400" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Customers" Relationship="Self.FK__UserAccou__custo__4CA06362" FromRole="UserAccounts" ToRole="Customers" />
+        </EntityType>
+        <Association Name="FK__AllSeats__lounge__48CFD27E">
+          <End Role="Lounges" Type="Self.Lounges" Multiplicity="1" />
+          <End Role="AllSeats" Type="Self.AllSeats" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lounges">
+              <PropertyRef Name="loungeId" />
+            </Principal>
+            <Dependent Role="AllSeats">
+              <PropertyRef Name="loungeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Bookings__allSea__49C3F6B7">
+          <End Role="AllSeats" Type="Self.AllSeats" Multiplicity="0..1" />
+          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AllSeats">
+              <PropertyRef Name="allSeatsId" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="allSeatsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Bookings__custom__47DBAE45">
+          <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="customerId" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="customerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__UserAccou__custo__4CA06362">
+          <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
+          <End Role="UserAccounts" Type="Self.UserAccounts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="customerId" />
+            </Principal>
+            <Dependent Role="UserAccounts">
+              <PropertyRef Name="customerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovieShow__loung__4AB81AF0">
+          <End Role="Lounges" Type="Self.Lounges" Multiplicity="0..1" />
+          <End Role="MovieShowings" Type="Self.MovieShowings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Lounges">
+              <PropertyRef Name="loungeId" />
+            </Principal>
+            <Dependent Role="MovieShowings">
+              <PropertyRef Name="loungeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Movies__performa__59063A47">
+          <End Role="PerformanceNumbers" Type="Self.PerformanceNumbers" Multiplicity="0..1" />
+          <End Role="Movies" Type="Self.Movies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PerformanceNumbers">
+              <PropertyRef Name="performanceId" />
+            </Principal>
+            <Dependent Role="Movies">
+              <PropertyRef Name="performanceId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__MovieShow__movie__4BAC3F29">
+          <End Role="Movies" Type="Self.Movies" Multiplicity="0..1" />
+          <End Role="MovieShowings" Type="Self.MovieShowings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movies">
+              <PropertyRef Name="movieId" />
+            </Principal>
+            <Dependent Role="MovieShowings">
+              <PropertyRef Name="movieId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BookingDBEntities" annotation:LazyLoadingEnabled="false">
+          <EntitySet Name="AllSeats" EntityType="Self.AllSeats" />
+          <EntitySet Name="Bookings" EntityType="Self.Bookings" />
+          <EntitySet Name="Customers" EntityType="Self.Customers" />
+          <EntitySet Name="Lounges" EntityType="Self.Lounges" />
+          <EntitySet Name="Movies" EntityType="Self.Movies" />
+          <EntitySet Name="MovieShowings" EntityType="Self.MovieShowings" />
+          <EntitySet Name="PerformanceNumbers" EntityType="Self.PerformanceNumbers" />
+          <EntitySet Name="UserAccounts" EntityType="Self.UserAccounts" />
+          <AssociationSet Name="FK__AllSeats__lounge__48CFD27E" Association="Self.FK__AllSeats__lounge__48CFD27E">
+            <End Role="Lounges" EntitySet="Lounges" />
+            <End Role="AllSeats" EntitySet="AllSeats" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Bookings__allSea__49C3F6B7" Association="Self.FK__Bookings__allSea__49C3F6B7">
+            <End Role="AllSeats" EntitySet="AllSeats" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Bookings__custom__47DBAE45" Association="Self.FK__Bookings__custom__47DBAE45">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__UserAccou__custo__4CA06362" Association="Self.FK__UserAccou__custo__4CA06362">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="UserAccounts" EntitySet="UserAccounts" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovieShow__loung__4AB81AF0" Association="Self.FK__MovieShow__loung__4AB81AF0">
+            <End Role="Lounges" EntitySet="Lounges" />
+            <End Role="MovieShowings" EntitySet="MovieShowings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Movies__performa__59063A47" Association="Self.FK__Movies__performa__59063A47">
+            <End Role="PerformanceNumbers" EntitySet="PerformanceNumbers" />
+            <End Role="Movies" EntitySet="Movies" />
+          </AssociationSet>
+          <AssociationSet Name="FK__MovieShow__movie__4BAC3F29" Association="Self.FK__MovieShow__movie__4BAC3F29">
+            <End Role="Movies" EntitySet="Movies" />
+            <End Role="MovieShowings" EntitySet="MovieShowings" />
+          </AssociationSet>
+          <EntitySet Name="sysdiagrams" EntityType="BookingDBModel.sysdiagrams" />
+        </EntityContainer>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BookingDBModelStoreContainer" CdmEntityContainer="BookingDBEntities">
+          <EntitySetMapping Name="AllSeats">
+            <EntityTypeMapping TypeName="BookingDBModel.AllSeats">
+              <MappingFragment StoreEntitySet="AllSeats">
+                <ScalarProperty Name="allSeatsId" ColumnName="allSeatsId" />
+                <ScalarProperty Name="loungeId" ColumnName="loungeId" />
+                <ScalarProperty Name="rowNumber" ColumnName="rowNumber" />
+                <ScalarProperty Name="seatNumber" ColumnName="seatNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Bookings">
+            <EntityTypeMapping TypeName="BookingDBModel.Bookings">
+              <MappingFragment StoreEntitySet="Bookings">
+                <ScalarProperty Name="bookingId" ColumnName="bookingId" />
+                <ScalarProperty Name="customerId" ColumnName="customerId" />
+                <ScalarProperty Name="bookingForDate" ColumnName="bookingForDate" />
+                <ScalarProperty Name="bookingMadeDate" ColumnName="bookingMadeDate" />
+                <ScalarProperty Name="allSeatsId" ColumnName="allSeatsId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="BookingDBModel.Customers">
+              <MappingFragment StoreEntitySet="Customers">
+                <ScalarProperty Name="customerId" ColumnName="customerId" />
+                <ScalarProperty Name="email" ColumnName="email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Lounges">
+            <EntityTypeMapping TypeName="BookingDBModel.Lounges">
+              <MappingFragment StoreEntitySet="Lounges">
+                <ScalarProperty Name="loungeId" ColumnName="loungeId" />
+                <ScalarProperty Name="seatCount" ColumnName="seatCount" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Movies">
+            <EntityTypeMapping TypeName="BookingDBModel.Movies">
+              <MappingFragment StoreEntitySet="Movies">
+                <ScalarProperty Name="movieId" ColumnName="movieId" />
+                <ScalarProperty Name="movieName" ColumnName="movieName" />
+                <ScalarProperty Name="performanceId" ColumnName="performanceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MovieShowings">
+            <EntityTypeMapping TypeName="BookingDBModel.MovieShowings">
+              <MappingFragment StoreEntitySet="MovieShowings">
+                <ScalarProperty Name="movieShowingsId" ColumnName="movieShowingsId" />
+                <ScalarProperty Name="loungeId" ColumnName="loungeId" />
+                <ScalarProperty Name="movieId" ColumnName="movieId" />
+                <ScalarProperty Name="showingFromDate" ColumnName="showingFromDate" />
+                <ScalarProperty Name="showToDate" ColumnName="showToDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PerformanceNumbers">
+            <EntityTypeMapping TypeName="BookingDBModel.PerformanceNumbers">
+              <MappingFragment StoreEntitySet="PerformanceNumbers">
+                <ScalarProperty Name="performanceId" ColumnName="performanceId" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserAccounts">
+            <EntityTypeMapping TypeName="BookingDBModel.UserAccounts">
+              <MappingFragment StoreEntitySet="UserAccounts">
+                <ScalarProperty Name="userAccountId" ColumnName="userAccountId" />
+                <ScalarProperty Name="accountName" ColumnName="accountName" />
+                <ScalarProperty Name="accountPassword" ColumnName="accountPassword" />
+                <ScalarProperty Name="customerId" ColumnName="customerId" />
+                <ScalarProperty Name="customerName" ColumnName="customerName" />
+                <ScalarProperty Name="phoneNumber" ColumnName="phoneNumber" />
+                <ScalarProperty Name="salt" ColumnName="salt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="BookingDBModel.sysdiagrams">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
