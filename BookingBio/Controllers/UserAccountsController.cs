@@ -43,28 +43,38 @@ namespace BookingBio.Controllers
         [ResponseType(typeof(UserAccountAndCustomersDTO))]
         public IHttpActionResult PostUserAccounts(UserAccountAndCustomersDTO userAccounts) // CREATE ACCOUNT
         {
+            TextResult httpResponse = new TextResult("There is already an account with that name!", msg);
+            UserAccountsManager umgr = new UserAccountsManager();
+            CustomerManager cmgr = new CustomerManager();
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-                TextResult httpResponse = new TextResult("There is already an account with that name!", msg);
-                UserAccountsManager umgr = new UserAccountsManager();
-                CustomerManager cmgr = new CustomerManager();
-                bool accNameExist = umgr.CheckIfAccountNameExists(userAccounts.AccountName); // Check if username already exists, returns bool
-                    if (accNameExist.Equals(false))
+                bool EmailIsOk = umgr.IsValidEmail(userAccounts.Email);
+                    if (EmailIsOk.Equals(false))
                     {
-                  
+                        httpResponse.ChangeHTTPMessage("Enter valid email!", msg);
+                        return httpResponse; // HTTP response if accountname already exists
+                    };
+                bool accNameExist = umgr.CheckIfAccountNameExists(userAccounts.AccountName); // Check if username already exists, returns bool
+                    if (accNameExist.Equals(true))
+                    {
                         return httpResponse; // HTTP response if accountname already exists
                     };
                 bool emailExists = cmgr.CheckIfEmailExists(userAccounts.Email); // check if email already exists, returns bool
                     if (emailExists.Equals(true))
-                    {
-                         
+                    {                        
                         httpResponse.ChangeHTTPMessage("Email already exists!", msg); // If email exists, HTTP response
                         return httpResponse; 
                     };
-                    var customerObject = cmgr.AddCustomer(userAccounts.Email); // Creates customer entity
-                    var userObject = umgr.CreateUserAccount(userAccounts.AccountName, userAccounts.AccountPassword, userAccounts.PhoneNumber, userAccounts.CustomerName, customerObject); // creates useraccount entity            
+                bool passwordIsNotOk = umgr.CheckIfPasswordIsOk(userAccounts.AccountPassword); // checks if password is ok
+                    if (passwordIsNotOk.Equals(true))
+                    {
+                        httpResponse.ChangeHTTPMessage("Password must contain atleast six characters, one digit and one uppercase!", msg); // If password is not ok, HTTP response
+                        return httpResponse;
+                    };
+                var customerObject = cmgr.AddCustomer(userAccounts.Email); // Creates customer entity
+                var userObject = umgr.CreateUserAccount(userAccounts.AccountName, userAccounts.AccountPassword, userAccounts.PhoneNumber, userAccounts.CustomerName, customerObject); // creates useraccount entity            
                     try
                     {
                         db.Customers.Add(customerObject); // adds customer entity to DB
@@ -73,7 +83,6 @@ namespace BookingBio.Controllers
                     }
                     catch
                     {
-
                         httpResponse.ChangeHTTPMessage("Failed to create account!", msg); // HTTP response if fails to savechanges to DB
                         return httpResponse;
                     }
@@ -140,29 +149,18 @@ namespace BookingBio.Controllers
             }
             UserAccountsManager umgr = new UserAccountsManager();
             UserAccounts updatedUserAcc = umgr.UpdateAccountDetails(updateAccount); // Function to update account details
-
             if (updatedUserAcc is null)
             {
                 httpResponse.ChangeHTTPMessage("Failed to update account!", msg); // Http response if user entity is null
                 return httpResponse;
             }
-                               
-            db.Entry(updatedUserAcc).State = EntityState.Modified; // updates user entity
-            bool saveFailed;
-            do
-            {
-                saveFailed = false;
-                try
-                {                  
-                    db.SaveChanges(); // save changes to DB
-                }
-                catch (DbUpdateConcurrencyException ex)
-                {
-                    saveFailed = true;                   
-                    ex.Entries.Single().Reload();// reloads user entity from DB
-                }
-            } while (saveFailed);
+            bool entityIsUpdated = umgr.UpdateEntityInDb(updatedUserAcc); // Updating entity in DB
+            if (entityIsUpdated.Equals(true))
+            {              
+                return httpResponse;
+            }           
 
+            httpResponse.ChangeHTTPMessage("Failed to update account!", msg);
             return httpResponse;
         }
 
@@ -183,6 +181,12 @@ namespace BookingBio.Controllers
                 return BadRequest(ModelState);
             }
             UserAccountsManager umgr = new UserAccountsManager();
+            bool passwordIsNotOk = umgr.CheckIfPasswordIsOk(changePass.NewPassword);
+            if (passwordIsNotOk.Equals(true))
+            {
+                httpResponse.ChangeHTTPMessage("Password must contain atleast six characters, one digit and one uppercase!", msg); // If password is not ok, HTTP response
+                return httpResponse;
+            }
             try
             {
                 salt = umgr.GetUserSalt(changePass.AccountName); // Gets salt from DB
@@ -199,24 +203,12 @@ namespace BookingBio.Controllers
                 UserAccounts updatedUser = new UserAccounts();
                 updatedUser.accountPassword = hashedNewPassword; // Adds new hashed password to user entity
                 updatedUser.accountName = changePass.AccountName; // User entity account name
-
-                db.Entry(updatedUser).State = EntityState.Modified; // updates useraccount entity
-                bool saveFailed;
-                do
+                bool entityIsUpdated = umgr.UpdateEntityInDb(updatedUser); // Updating entity in DB
+                if (entityIsUpdated.Equals(true))
                 {
-                    saveFailed = false;
-                    try
-                    {
-                        db.SaveChanges(); // saves changes in DB
-                    }
-                    catch (DbUpdateConcurrencyException ex)
-                    {
-                        saveFailed = true;
-                        ex.Entries.Single().Reload(); // reloads entity from DB
-                    }
-
-                } while (saveFailed);
-                httpResponse.ChangeHTTPMessage("Password changed!", msg);
+                    httpResponse.ChangeHTTPMessage("Password changed!", msg);
+                    return httpResponse;
+                }                            
                 return httpResponse;
             }
 
