@@ -2,6 +2,8 @@
 using BookingBio.Models.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,8 +16,8 @@ namespace BookingBio.Managers
 
         public UserAccounts CreateUserAccount(string accountName, string accountPassword, string phoneNumber, string customerName, Customers cust) // skapa user account
         {
-            string newSalt = CreateSalt(8);
-            string hashedPass = HashPassword(newSalt, accountPassword);            
+            string newSalt = CreateSalt(8); // Calls Create salt function
+            string hashedPass = HashPassword(newSalt, accountPassword); // Calls hashpassword function    
             UserAccounts user = new UserAccounts();
             user.accountName = accountName;
             user.accountPassword = hashedPass;
@@ -48,10 +50,7 @@ namespace BookingBio.Managers
             {
                 userAcc = null;
                 return userAcc;
-            }
-            
-
-            
+            }            
         }
 
         public UserAccounts UpdateAccountDetails(UpdateAccountDTO userAccInput) // update account details
@@ -61,7 +60,6 @@ namespace BookingBio.Managers
             {
                 return dbUpdatedAcc;
             }
-
             dbUpdatedAcc.customerName = userAccInput.CustomerName; // uppdaterar customer namn
             dbUpdatedAcc.phoneNumber = userAccInput.PhoneNumber; // uppdaterar useracc phonenumber
             
@@ -149,7 +147,7 @@ namespace BookingBio.Managers
 
         public bool CheckIfAccountNameExists (string accountNameInput) // Check if account name exists in DB
         {
-            bool accountNameIsOk = false;
+            bool accountNameIsNotOk = true;
             using (var db = new BookingDBEntities())
             {
                 var accName = (from s in db.UserAccounts
@@ -158,13 +156,61 @@ namespace BookingBio.Managers
 
                 if (accName.Equals(String.Empty))
                 {
-                    accountNameIsOk = true;
+                    accountNameIsNotOk = false;
                 };
 
-                return accountNameIsOk;
+                return accountNameIsNotOk;
             }
         }
-        
+
+        public bool UpdateEntityInDb (object updatedUser)
+        {
+            bool entityUpdated = false;
+            using (var db = new BookingDBEntities())
+            {
+                db.Entry(updatedUser).State = EntityState.Modified;
+                bool saveFailed;
+                do
+                {
+                    saveFailed = false;
+                    try
+                    {
+                        db.SaveChanges(); // saves changes in DB
+                        entityUpdated = true;
+                    }
+                    catch (DbUpdateConcurrencyException ex)
+                    {
+                        saveFailed = true;
+                        ex.Entries.Single().Reload(); // reloads entity from DB
+                        entityUpdated = false;
+                    }
+
+                } while (saveFailed);
+            }            
+            return entityUpdated;
+        }
+
+        public bool CheckIfPasswordIsOk (string password) // Check if password is ok
+        {
+            bool passwordIsNotOk = true;
+            if (password.Any(char.IsUpper) && password.Any(char.IsLower) && password.Any(char.IsDigit))
+            {
+                passwordIsNotOk = false;
+            }
+            return passwordIsNotOk;
+        }
+        public bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         private static string CreateSalt(int size) // Creates salt
         {
