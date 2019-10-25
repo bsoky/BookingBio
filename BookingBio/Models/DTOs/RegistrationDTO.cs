@@ -5,7 +5,7 @@ using System.Web;
 
 namespace BookingBio.Models.DTOs
 {
-    public class UserAccountAndCustomersDTO
+    public class RegistrationDTO
     {
         // userAcconunt       
         public string AccountName { get; set; }

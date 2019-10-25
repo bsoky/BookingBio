@@ -30,10 +30,8 @@ namespace BookingBio.Models
         public virtual DbSet<Bookings> Bookings { get; set; }
         public virtual DbSet<Customers> Customers { get; set; }
         public virtual DbSet<Lounges> Lounges { get; set; }
-        public virtual DbSet<Movies> Movies { get; set; }
         public virtual DbSet<MovieShowings> MovieShowings { get; set; }
-        public virtual DbSet<PerformanceNumbers> PerformanceNumbers { get; set; }
+        public virtual DbSet<Movies> Movies { get; set; }
         public virtual DbSet<UserAccounts> UserAccounts { get; set; }
-        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
     }
 }

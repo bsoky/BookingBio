@@ -165,12 +165,13 @@
     <Compile Include="Controllers\AllSeatsController.cs" />
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\LogoutController.cs" />
     <Compile Include="Controllers\LoungesController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
     <Compile Include="Controllers\MovieShowingsController.cs" />
+    <Compile Include="Controllers\RegistrationController.cs" />
     <Compile Include="Controllers\UserAccountsController.cs" />
-    <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -178,6 +179,7 @@
     <Compile Include="Managers\BookingManager.cs" />
     <Compile Include="Managers\CustomerManager.cs" />
     <Compile Include="Managers\LoungeManager.cs" />
+    <Compile Include="Managers\MoviesManager.cs" />
     <Compile Include="Managers\SeatManager.cs" />
     <Compile Include="Managers\UserAccountsManager.cs" />
     <Compile Include="Models\AllSeats.cs">
@@ -198,6 +200,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BookingDB.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\BookingDB1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BookingDB.edmx</DependentUpon>
+    </Compile>
     <Compile Include="Models\Bookings.cs">
       <DependentUpon>BookingDB.tt</DependentUpon>
     </Compile>
@@ -206,9 +213,13 @@
     </Compile>
     <Compile Include="Models\DTOs\AccountNameDTO.cs" />
     <Compile Include="Models\DTOs\ChangePasswordDTO.cs" />
+    <Compile Include="Models\DTOs\CustomerBookingDTO.cs" />
+    <Compile Include="Models\DTOs\MovieShowingDTO.cs" />
     <Compile Include="Models\DTOs\UpdateAccountDTO.cs" />
-    <Compile Include="Models\DTOs\UserAccountAndCustomersDTO.cs" />
+    <Compile Include="Models\DTOs\RegistrationDTO.cs" />
+    <Compile Include="Models\DTOs\UserAccountBookingDTO.cs" />
     <Compile Include="Models\DTOs\UserAccountsDTO.cs" />
+    <Compile Include="Models\DTOs\UserLoginDTO.cs" />
     <Compile Include="Models\Lounges.cs">
       <DependentUpon>BookingDB.tt</DependentUpon>
     </Compile>
@@ -216,12 +227,6 @@
       <DependentUpon>BookingDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MovieShowings.cs">
-      <DependentUpon>BookingDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PerformanceNumbers.cs">
-      <DependentUpon>BookingDB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>BookingDB.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserAccounts.cs">
@@ -271,7 +276,7 @@
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <EntityDeploy Include="Models\BookingDB.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>BookingDB.Designer.cs</LastGenOutput>
+      <LastGenOutput>BookingDB1.Designer.cs</LastGenOutput>
     </EntityDeploy>
     <Content Include="Models\BookingDB.edmx.diagram">
       <DependentUpon>BookingDB.edmx</DependentUpon>

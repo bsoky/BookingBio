@@ -6,21 +6,18 @@
     <edmx:Diagrams>
       <Diagram DiagramId="6c3248c35c694c31944f02bf4c42a8f3" Name="Diagram1">
         <EntityTypeShape EntityType="BookingDBModel.AllSeats" Width="1.5" PointX="3" PointY="3.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="BookingDBModel.Bookings" Width="1.5" PointX="5.25" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="BookingDBModel.Customers" Width="1.5" PointX="3" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="BookingDBModel.Bookings" Width="1.5" PointX="5" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="BookingDBModel.Customers" Width="1.5" PointX="7" PointY="3.375" IsExpanded="true" />
         <EntityTypeShape EntityType="BookingDBModel.Lounges" Width="1.5" PointX="0.75" PointY="4" IsExpanded="true" />
-        <EntityTypeShape EntityType="BookingDBModel.Movies" Width="1.5" PointX="0.75" PointY="6.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="BookingDBModel.MovieShowings" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="BookingDBModel.PerformanceNumbers" Width="1.5" PointX="1.5" PointY="9.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="BookingDBModel.UserAccounts" Width="1.5" PointX="5.25" PointY="7.625" IsExpanded="true" />
         <AssociationConnector Association="BookingDBModel.FK__AllSeats__lounge__48CFD27E" ManuallyRouted="false" />
         <AssociationConnector Association="BookingDBModel.FK__Bookings__allSea__49C3F6B7" ManuallyRouted="false" />
         <AssociationConnector Association="BookingDBModel.FK__Bookings__custom__47DBAE45" ManuallyRouted="false" />
-        <AssociationConnector Association="BookingDBModel.FK__UserAccou__custo__4CA06362" ManuallyRouted="false" />
-        <AssociationConnector Association="BookingDBModel.FK__MovieShow__loung__4AB81AF0" ManuallyRouted="false" />
-        <AssociationConnector Association="BookingDBModel.FK__Movies__performa__59063A47" ManuallyRouted="false" />
-        <AssociationConnector Association="BookingDBModel.FK__MovieShow__movie__4BAC3F29" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="BookingDBModel.sysdiagrams" Width="1.5" PointX="5.375" PointY="0.75" />
+        <EntityTypeShape EntityType="BookingDBModel.MovieShowings" Width="1.5" PointX="2.875" PointY="1.25" />
+        <AssociationConnector Association="BookingDBModel.FK__MovieShow__loung__48CFD27E" />
+        <EntityTypeShape EntityType="BookingDBModel.Movies" Width="1.5" PointX="5.375" PointY="0.875" />
+        <AssociationConnector Association="BookingDBModel.FK__MovieShow__movie__49C3F6B7" />
+        <EntityTypeShape EntityType="BookingDBModel.UserAccounts" Width="1.5" PointX="9.25" PointY="3" />
+        <AssociationConnector Association="BookingDBModel.FK__UserAccou__custo__4AB81AF0" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

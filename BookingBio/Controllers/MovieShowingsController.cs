@@ -6,15 +6,19 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BookingBio.Managers;
 using BookingBio.Models;
+using BookingBio.Models.DTOs;
 
 namespace BookingBio.Controllers
 {
     public class MovieShowingsController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();
+        private HttpRequestMessage msg = new HttpRequestMessage();
 
         // GET: api/MovieShowings
         public IQueryable<MovieShowings> GetMovieShowings()
@@ -71,18 +75,39 @@ namespace BookingBio.Controllers
         }
 
         // POST: api/MovieShowings
-        [ResponseType(typeof(MovieShowings))]
-        public IHttpActionResult PostMovieShowings(MovieShowings movieShowings)
+        [ResponseType(typeof(MovieShowingDTO))]
+        public IHttpActionResult PostMovieShowings(MovieShowingDTO movieShowings) // ADD NEW MOVIE SHOWING
         {
+            MoviesManager mvmgr = new MoviesManager();
+            BookingManager bmgr = new BookingManager();
+            TextResult httpResponse = new TextResult("", msg);
+            DateTime convertedShowingDate = new DateTime();
+
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-            db.MovieShowings.Add(movieShowings);
-            db.SaveChanges();
-
-            return CreatedAtRoute("DefaultApi", new { id = movieShowings.movieShowingsId }, movieShowings);
+            convertedShowingDate = bmgr.DateTimeConverter(movieShowings.movieShowingTime);
+            int? showingExists = mvmgr.CheckIfMovieShowingExists(convertedShowingDate); // Checks if movieshowing already exists
+            if (showingExists!= 0)
+            {
+                httpResponse.ChangeHTTPMessage("Showing already exists on that date!", msg); // http response
+                return httpResponse;
+            }
+            var movieShowingEntity = mvmgr.AddNewMovieShowing(convertedShowingDate, movieShowings.loungeId, movieShowings.movieId); // creates moieshowing entity
+            try
+            {
+                db.MovieShowings.Add(movieShowingEntity);
+                db.SaveChanges();
+            } catch
+            {
+                httpResponse.ChangeHTTPMessage("Movieshowing could not be added!", msg);
+                return httpResponse;
+            }
+            
+            httpResponse.ChangeHTTPMessage("Movieshowing added!", msg);
+            return httpResponse;
         }
 
         // DELETE: api/MovieShowings/5
