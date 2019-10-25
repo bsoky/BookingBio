@@ -17,8 +17,7 @@ namespace BookingBio.Models
         public int movieShowingsId { get; set; }
         public Nullable<int> loungeId { get; set; }
         public Nullable<int> movieId { get; set; }
-        public Nullable<System.DateTime> showingFromDate { get; set; }
-        public Nullable<System.DateTime> showToDate { get; set; }
+        public Nullable<System.DateTime> movieShowingTime { get; set; }
     
         public virtual Lounges Lounges { get; set; }
         public virtual Movies Movies { get; set; }

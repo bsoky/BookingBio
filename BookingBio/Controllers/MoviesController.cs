@@ -6,8 +6,10 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BookingBio.Managers;
 using BookingBio.Models;
 
 namespace BookingBio.Controllers
@@ -15,7 +17,7 @@ namespace BookingBio.Controllers
     public class MoviesController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();
-
+        private HttpRequestMessage msg = new HttpRequestMessage();
         // GET: api/Movies
         public IQueryable<Movies> GetMovies()
         {
@@ -72,17 +74,25 @@ namespace BookingBio.Controllers
 
         // POST: api/Movies
         [ResponseType(typeof(Movies))]
-        public IHttpActionResult PostMovies(Movies movies)
+        public IHttpActionResult PostMovies(Movies movies) // ADD NEW MOVIE TO DATABASE
         {
+            TextResult httpResponse = new TextResult("Movie added!", msg);
+            MoviesManager mvmgr = new MoviesManager();
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
-
-            db.Movies.Add(movies);
+            }          
+            int movieExists = mvmgr.CheckIfMovieExists(movies.movieName); // returns 0 if movie exists
+                if (movieExists!=0) 
+                {
+                    httpResponse.ChangeHTTPMessage("Movie already exists!", msg);
+                    return httpResponse;
+                }
+            var movieEntity = mvmgr.AddNewMovie(movies.movieName);
+            db.Movies.Add(movieEntity);
             db.SaveChanges();
 
-            return CreatedAtRoute("DefaultApi", new { id = movies.movieId }, movies);
+            return httpResponse;
         }
 
         // DELETE: api/Movies/5

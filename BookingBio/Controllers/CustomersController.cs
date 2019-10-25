@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using BookingBio.Managers;
@@ -76,17 +77,23 @@ namespace BookingBio.Controllers
         [ResponseType(typeof(Customers))]
         public IHttpActionResult PostCustomers(Customers customers) // Adds new customer
         {
+            TextResult httpResponse = new TextResult("Enter valid email!", msg);
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
             CustomerManager cmgr = new CustomerManager();
+            bool EmailIsOk = cmgr.IsValidEmail(customers.email);
+            if (EmailIsOk.Equals(false))
+            {             
+                return httpResponse; // HTTP response if accountname already exists
+            };
             bool emailExists = cmgr.CheckIfEmailExists(customers.email); // Check if email exists
             if (emailExists.Equals(true))
             {
-                TextResult emailIsExisting = new TextResult("Email already exists!", msg); // Http response
-                return emailIsExisting;
+                httpResponse.ChangeHTTPMessage("Email already exists!", msg); // Http response
+                return httpResponse;
             }
             var customerObject = cmgr.AddCustomer(customers.email); // creates new customer entity
 
@@ -100,7 +107,8 @@ namespace BookingBio.Controllers
                 TextResult FailedToCreateCustomer = new TextResult("Failed to create customer", msg);
                 return FailedToCreateCustomer;
             }
-            return Ok();
+            httpResponse.ChangeHTTPMessage("Account created!", msg); // Http response
+            return httpResponse;
         }
 
         // DELETE: api/Customers/5

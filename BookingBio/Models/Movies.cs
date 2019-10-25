@@ -22,9 +22,7 @@ namespace BookingBio.Models
     
         public int movieId { get; set; }
         public string movieName { get; set; }
-        public Nullable<int> performanceId { get; set; }
     
-        public virtual PerformanceNumbers PerformanceNumbers { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MovieShowings> MovieShowings { get; set; }
     }

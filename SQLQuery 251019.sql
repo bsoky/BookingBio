@@ -1,4 +1,4 @@
-USE BookingDB;
+	USE BookingDB;
 
 CREATE TABLE Customers (
   customerId int PRIMARY KEY IDENTITY (1,1) NOT NULL  
@@ -8,8 +8,8 @@ CREATE TABLE Customers (
 CREATE TABLE Bookings (
   bookingId int PRIMARY KEY IDENTITY  (1,1) NOT NULL
   ,customerId int 
-  ,bookingForDate datetime
-  ,bookingMadeDate datetime
+  ,bookingForDate smalldatetime
+  ,bookingMadeDate smalldatetime
   ,allSeatsId int
   
 );
@@ -21,12 +21,6 @@ CREATE TABLE AllSeats (
   ,seatNumber int NOT NULL
 );
 
-CREATE TABLE PerformanceNumbers (
-  performanceId int PRIMARY KEY IDENTITY (1,1) NOT NULL
-  ,startTime datetime 
-  ,endTime datetime 
-);
-
 CREATE TABLE Lounges (
   loungeId int PRIMARY KEY IDENTITY(1,1) NOT NULL
   ,seatCount int NOT NULL
@@ -36,8 +30,7 @@ CREATE TABLE MovieShowings (
   movieShowingsId int PRIMARY KEY IDENTITY (1,1) NOT NULL
   ,loungeId int
   ,movieId int
-  ,showingFromDate datetime
-  ,showToDate datetime
+  ,movieShowingTime smalldatetime
 );
 
 CREATE TABLE Movies (
@@ -51,12 +44,9 @@ CREATE TABLE UserAccounts (
   ,accountPassword nvarchar(400) NOT NULL
   ,customerId int
   ,customerName varchar(255)
-  ,phoneNumber int  
+  ,phoneNumber nvarchar(30) 
+  ,salt nvarchar(100)
 );
-
-
-
-
 
 
 ALTER TABLE Bookings ADD FOREIGN KEY (customerId) REFERENCES Customers (customerId);

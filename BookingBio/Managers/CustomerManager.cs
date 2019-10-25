@@ -10,6 +10,7 @@ namespace BookingBio.Managers
     {
         public Customers AddCustomer(string emailInput) // create new customer entity
         {
+
             Customers cust = new Customers();
             cust.email = emailInput;
 
@@ -27,26 +28,64 @@ namespace BookingBio.Managers
 
                 if (email!=(String.Empty)) 
                 {
-                    emailExists = true; // returns if linq query returns and email from DB
+                    emailExists = true; // returns if linq query returns an email from DB
                 };
 
                 return emailExists;
             }
 
         }
-        private int FindCustomerId(string emailInput) // find customer id from email
+        public int FindCustomerId(string emailInput) // find customer id from email
+        {
+            using (var db = new BookingDBEntities())
+            {
+
+                var custId = (from s in db.Customers
+                             where s.email == emailInput
+                             select s.customerId).FirstOrDefault();
+
+                return custId;
+            }
+         
+        }
+        public Customers GetCustomerEntity(string emailInput) // find customer id from email
         {
             using (var db = new BookingDBEntities())
             {
 
                 var accId = (from s in db.Customers
                              where s.email == emailInput
-                             select s.customerId).FirstOrDefault();
+                             select s).FirstOrDefault<Customers>();
 
                 return accId;
             }
 
-            
+        }
+        public int GetCustomerId(string emailInput)
+        {
+            using (var db = new BookingDBEntities())
+            {
+
+                var custId = (from s in db.Customers
+                             where s.email == emailInput
+                             select s.customerId).FirstOrDefault();
+
+                return custId;
+            }
+        }
+
+
+        public bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

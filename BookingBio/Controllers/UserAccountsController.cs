@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
+using System.Data.Entity.Validation;
 
 namespace BookingBio.Controllers
 {
@@ -36,86 +37,7 @@ namespace BookingBio.Controllers
 
             return userAccounts;
         }
-
-        // POST:
-        [Route("UserAccounts/CreateAccount")]
-        [HttpPost]
-        [ResponseType(typeof(UserAccountAndCustomersDTO))]
-        public IHttpActionResult PostUserAccounts(UserAccountAndCustomersDTO userAccounts) // CREATE ACCOUNT
-        {
-            TextResult httpResponse = new TextResult("There is already an account with that name!", msg);
-            UserAccountsManager umgr = new UserAccountsManager();
-            CustomerManager cmgr = new CustomerManager();
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-                bool EmailIsOk = umgr.IsValidEmail(userAccounts.Email);
-                    if (EmailIsOk.Equals(false))
-                    {
-                        httpResponse.ChangeHTTPMessage("Enter valid email!", msg);
-                        return httpResponse; // HTTP response if accountname already exists
-                    };
-                bool accNameExist = umgr.CheckIfAccountNameExists(userAccounts.AccountName); // Check if username already exists, returns bool
-                    if (accNameExist.Equals(true))
-                    {
-                        return httpResponse; // HTTP response if accountname already exists
-                    };
-                bool emailExists = cmgr.CheckIfEmailExists(userAccounts.Email); // check if email already exists, returns bool
-                    if (emailExists.Equals(true))
-                    {                        
-                        httpResponse.ChangeHTTPMessage("Email already exists!", msg); // If email exists, HTTP response
-                        return httpResponse; 
-                    };
-                bool passwordIsNotOk = umgr.CheckIfPasswordIsOk(userAccounts.AccountPassword); // checks if password is ok
-                    if (passwordIsNotOk.Equals(true))
-                    {
-                        httpResponse.ChangeHTTPMessage("Password must contain atleast six characters, one digit and one uppercase!", msg); // If password is not ok, HTTP response
-                        return httpResponse;
-                    };
-                var customerObject = cmgr.AddCustomer(userAccounts.Email); // Creates customer entity
-                var userObject = umgr.CreateUserAccount(userAccounts.AccountName, userAccounts.AccountPassword, userAccounts.PhoneNumber, userAccounts.CustomerName, customerObject); // creates useraccount entity            
-                    try
-                    {
-                        db.Customers.Add(customerObject); // adds customer entity to DB
-                        db.UserAccounts.Add(userObject); // adds useraccount to DB
-                        db.SaveChanges();
-                    }
-                    catch
-                    {
-                        httpResponse.ChangeHTTPMessage("Failed to create account!", msg); // HTTP response if fails to savechanges to DB
-                        return httpResponse;
-                    }
-            
-            httpResponse.ChangeHTTPMessage("Account created!", msg);
-            return httpResponse;
-        }
-
-        // POST:
-        [Route("UserAccounts/Login")]
-        [HttpPost]
-        [ResponseType(typeof(HttpResponseMessage))]
-        public IHttpActionResult Login(UserAccounts userAccounts) // LOGIN ACCOUNT
-        {
-            TextResult failedToVerify = new TextResult("Failed to verify account", msg); // HTTP response
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(); 
-            };
-            
-            UserAccountsManager umgr = new UserAccountsManager();
-            bool loginOk = umgr.Login(userAccounts.accountName, userAccounts.accountPassword); // Login function, returns bool
-            
-            
-            if (loginOk.Equals(true)) // If bool is true, return Ok(200) http response
-            {
-                return Ok();
-            }
-            
-            return failedToVerify; // Returns if failed to verify account
-        }
-
+       
         // GET: 
         [Route("UserAccounts/FindAccount/{accountName?}")]
         [HttpGet]
@@ -131,7 +53,6 @@ namespace BookingBio.Controllers
                 TextResult failedToFindAccount = new TextResult("Failed to find account", msg);
                 return failedToFindAccount;
             }           
-
             return Ok(user);
         }
 
@@ -168,7 +89,7 @@ namespace BookingBio.Controllers
         [HttpPut]
         [Route("UserAccounts/ChangePassword")]
         [ResponseType(typeof(ChangePasswordDTO))]        
-        public IHttpActionResult PutUserAccounts(ChangePasswordDTO changePass) // CHANGE PASSWORD
+        public IHttpActionResult PutUserAccounts(ChangePasswordDTO passwordInput) // CHANGE PASSWORD
         {
             TextResult httpResponse = new TextResult("Failed to change password!", msg); // Http response
 
@@ -181,7 +102,7 @@ namespace BookingBio.Controllers
                 return BadRequest(ModelState);
             }
             UserAccountsManager umgr = new UserAccountsManager();
-            bool passwordIsNotOk = umgr.CheckIfPasswordIsOk(changePass.NewPassword);
+            bool passwordIsNotOk = umgr.CheckIfPasswordIsOk(passwordInput.NewPassword); // Check if password is valid
             if (passwordIsNotOk.Equals(true))
             {
                 httpResponse.ChangeHTTPMessage("Password must contain atleast six characters, one digit and one uppercase!", msg); // If password is not ok, HTTP response
@@ -189,10 +110,10 @@ namespace BookingBio.Controllers
             }
             try
             {
-                salt = umgr.GetUserSalt(changePass.AccountName); // Gets salt from DB
-                hashedOldPassword = umgr.HashPassword(salt, changePass.OldPassword); // Hashing old password with user salt
-                hashedNewPassword = umgr.HashPassword(salt, changePass.NewPassword); // Hashing new password with user salt
-                hashedPasswordFromDb = umgr.GetPassword(changePass.AccountName); // Gets old hashed password from DB
+                salt = umgr.GetUserSalt(passwordInput.AccountName); // Gets salt from DB
+                hashedOldPassword = umgr.HashPassword(salt, passwordInput.OldPassword); // Hashing old password with user salt
+                hashedNewPassword = umgr.HashPassword(salt, passwordInput.NewPassword); // Hashing new password with user salt
+                hashedPasswordFromDb = umgr.GetPassword(passwordInput.AccountName); // Gets old hashed password from DB
             } catch
             {              
                 return httpResponse; // http response if above operations failed
@@ -202,7 +123,7 @@ namespace BookingBio.Controllers
             {
                 UserAccounts updatedUser = new UserAccounts();
                 updatedUser.accountPassword = hashedNewPassword; // Adds new hashed password to user entity
-                updatedUser.accountName = changePass.AccountName; // User entity account name
+                updatedUser.accountName = passwordInput.AccountName; // User entity account name
                 bool entityIsUpdated = umgr.UpdateEntityInDb(updatedUser); // Updating entity in DB
                 if (entityIsUpdated.Equals(true))
                 {
@@ -211,7 +132,6 @@ namespace BookingBio.Controllers
                 }                            
                 return httpResponse;
             }
-
             httpResponse.ChangeHTTPMessage("Password not correct!", msg); // if input password and password from DB do not match
             return httpResponse;
         }

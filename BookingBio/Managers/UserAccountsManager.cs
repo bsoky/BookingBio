@@ -16,7 +16,7 @@ namespace BookingBio.Managers
 
         public UserAccounts CreateUserAccount(string accountName, string accountPassword, string phoneNumber, string customerName, Customers cust) // skapa user account
         {
-            string newSalt = CreateSalt(8); // Calls Create salt function
+            string newSalt = CreateSalt(10); // Calls Create salt function
             string hashedPass = HashPassword(newSalt, accountPassword); // Calls hashpassword function    
             UserAccounts user = new UserAccounts();
             user.accountName = accountName;
@@ -60,16 +60,16 @@ namespace BookingBio.Managers
             {
                 return dbUpdatedAcc;
             }
-            dbUpdatedAcc.customerName = userAccInput.CustomerName; // uppdaterar customer namn
-            dbUpdatedAcc.phoneNumber = userAccInput.PhoneNumber; // uppdaterar useracc phonenumber
+            dbUpdatedAcc.customerName = userAccInput.CustomerName; // Uppdates customer name
+            dbUpdatedAcc.phoneNumber = userAccInput.PhoneNumber; // Updates phonenumber
             
             return dbUpdatedAcc;
         }
 
         public string ChangePassword (string passwordInput, string userAccName)
         {
-            string salt = GetUserSalt(userAccName); // hämtar useracc salt
-            string hashedPassword = HashPassword(salt, passwordInput); // hashar och saltar nytt lösenord
+            string salt = GetUserSalt(userAccName); // Gets userAcc salt
+            string hashedPassword = HashPassword(salt, passwordInput); // Hashes and salts new password
 
             return hashedPassword;
         }
@@ -199,17 +199,20 @@ namespace BookingBio.Managers
             }
             return passwordIsNotOk;
         }
-        public bool IsValidEmail(string email)
+
+        public bool CheckIfUserIsLoggedIn(string loginToken)
         {
-            try
+            bool loginOk = false;
+
+            if (loginToken is null || loginToken.Equals("")) // Token name and content?
+                {
+                    loginOk = false;
+                }
+            if (loginToken.Equals("token")) // check if token exists
             {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
+                loginOk = true;
             }
-            catch
-            {
-                return false;
-            }
+            return loginOk;
         }
 
         private static string CreateSalt(int size) // Creates salt
