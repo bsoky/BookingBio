@@ -74,6 +74,27 @@ namespace BookingBio.Managers
             }
         }
 
+        public Customers GetCustomerEntityFromId(int? custId) // Gets user entity from db
+        {
+            try
+            {
+                using (var db = new BookingDBEntities())
+                {
+                    var customer = (from s in db.Customers
+                                   where s.customerId == custId
+                                   select s).FirstOrDefault<Customers>();
+
+                    return customer;
+                }
+            }
+            catch
+            {
+                return null; // returns null if entity is not found
+            }
+
+
+        }
+
 
         public bool IsValidEmail(string email)
         {

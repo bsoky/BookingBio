@@ -8,6 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using BookingBio.Managers;
 using BookingBio.Models;
@@ -15,8 +16,10 @@ using BookingBio.Models.DTOs;
 
 namespace BookingBio.Controllers
 {
+    
     public class MovieShowingsController : ApiController
     {
+        
         private BookingDBEntities db = new BookingDBEntities();
         private HttpRequestMessage msg = new HttpRequestMessage();
 
@@ -27,16 +30,19 @@ namespace BookingBio.Controllers
         }
 
         // GET: api/MovieShowings/5
-        [ResponseType(typeof(MovieShowings))]
-        public IHttpActionResult GetMovieShowings(int id)
+        [Route("movieshowings")]
+        [ResponseType(typeof(MovieShowingTimeDTO))]
+        public IHttpActionResult GetMovieShowings(MovieNameDTO movie) // GETS MOVIESHOWINGS
         {
-            MovieShowings movieShowings = db.MovieShowings.Find(id);
-            if (movieShowings == null)
+            MoviesManager mmgr = new MoviesManager();
+            int movieId = mmgr.GetMovieIdFromName(movie.MovieName);
+            if (movieId == 0)
             {
-                return NotFound();
+                TextResult failedToFindMovie = new TextResult("Movie does not exist!", msg);
+                return failedToFindMovie;
             }
-
-            return Ok(movieShowings);
+            var movieList = mmgr.GetMovieShowingsFromMovieId(movieId); // Gets movieshowingtimes and puts in list                    
+            return Ok(movieList); 
         }
 
         // PUT: api/MovieShowings/5

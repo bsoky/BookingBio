@@ -7,11 +7,13 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using BookingBio.Models;
 
 namespace BookingBio.Controllers
 {
+    
     public class LoungesController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();

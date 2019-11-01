@@ -12,9 +12,11 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Data.Entity.Validation;
+using System.Web.Http.Cors;
 
 namespace BookingBio.Controllers
 {
+ 
     public class UserAccountsController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();
@@ -148,20 +150,29 @@ namespace BookingBio.Controllers
 
             return Ok(userAccounts);
         }
-        // DELETE: api/UserAccounts/5
+       
+        [Route("UserAccounts/deleteaccount")]
         [ResponseType(typeof(UserAccounts))]
-        public IHttpActionResult DeleteUserAccounts(int id)
+        public IHttpActionResult DeleteUserAccounts(AccountNameDTO accName)
         {
-            UserAccounts userAccounts = db.UserAccounts.Find(id);
-            if (userAccounts == null)
+            UserAccountsManager umgr = new UserAccountsManager();
+            CustomerManager cmgr = new CustomerManager();
+            var user = umgr.GetUserAccountByName(accName.AccountName);
+            var customer = cmgr.GetCustomerEntityFromId(user.customerId);
+
+            try
             {
-                return NotFound();
+                db.UserAccounts.Remove(user);
+                db.Customers.Remove(customer);
+                db.SaveChanges();
+            }
+            catch
+            {
+                TextResult httpResponse = new TextResult("Failed to delete account!", msg); // Http response
+                return httpResponse;
             }
 
-            db.UserAccounts.Remove(userAccounts);
-            db.SaveChanges();
-
-            return Ok(userAccounts);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)

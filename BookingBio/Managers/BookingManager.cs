@@ -10,13 +10,13 @@ namespace BookingBio.Managers
 {
     public class BookingManager
     {
-        public Bookings CreateUserAccountBooking( AllSeats seat, Customers cust, DateTime madeForDate, DateTime madeDate) // Makes booking entity with for useraccount, TODO
+        public Bookings UserAccountBooking(int? seatId, Customers cust, DateTime madeForDate, DateTime madeDate) // Makes booking entity with for useraccount, TODO
         {
             Bookings booking = new Bookings();
             
             booking.bookingMadeDate = madeDate;
             booking.bookingForDate = madeForDate;
-            booking.AllSeats = seat;
+            booking.allSeatsId = seatId;
             booking.Customers = cust;                      
 
             return booking;

@@ -184,19 +184,7 @@
           <Property Name="rowNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="seatNumber" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Lounges" Relationship="Self.FK__AllSeats__lounge__48CFD27E" FromRole="AllSeats" ToRole="Lounges" />
-          <NavigationProperty Name="Bookings" Relationship="Self.FK__Bookings__allSea__49C3F6B7" FromRole="AllSeats" ToRole="Bookings" />
-        </EntityType>
-        <EntityType Name="Bookings">
-          <Key>
-            <PropertyRef Name="bookingId" />
-          </Key>
-          <Property Name="bookingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="customerId" Type="Int32" />
-          <Property Name="bookingForDate" Type="DateTime" Precision="3" />
-          <Property Name="bookingMadeDate" Type="DateTime" Precision="3" />
-          <Property Name="allSeatsId" Type="Int32" />
-          <NavigationProperty Name="AllSeats" Relationship="Self.FK__Bookings__allSea__49C3F6B7" FromRole="Bookings" ToRole="AllSeats" />
-          <NavigationProperty Name="Customers" Relationship="Self.FK__Bookings__custom__47DBAE45" FromRole="Bookings" ToRole="Customers" />
+          <NavigationProperty Name="Bookings" Relationship="BookingDBModel.FK__Bookings__allSea__47DBAE45" FromRole="AllSeats" ToRole="Bookings" />
         </EntityType>
         <EntityType Name="Customers">
           <Key>
@@ -204,8 +192,8 @@
           </Key>
           <Property Name="customerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Bookings" Relationship="Self.FK__Bookings__custom__47DBAE45" FromRole="Customers" ToRole="Bookings" />
           <NavigationProperty Name="UserAccounts" Relationship="BookingDBModel.FK__UserAccou__custo__4AB81AF0" FromRole="Customers" ToRole="UserAccounts" />
+          <NavigationProperty Name="Bookings" Relationship="BookingDBModel.FK__Bookings__custom__45F365D3" FromRole="Customers" ToRole="Bookings" />
         </EntityType>
         <EntityType Name="Lounges">
           <Key>
@@ -228,46 +216,13 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Bookings__allSea__49C3F6B7">
-          <End Role="AllSeats" Type="Self.AllSeats" Multiplicity="0..1" />
-          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="AllSeats">
-              <PropertyRef Name="allSeatsId" />
-            </Principal>
-            <Dependent Role="Bookings">
-              <PropertyRef Name="allSeatsId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Bookings__custom__47DBAE45">
-          <End Role="Customers" Type="Self.Customers" Multiplicity="0..1" />
-          <End Role="Bookings" Type="Self.Bookings" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Customers">
-              <PropertyRef Name="customerId" />
-            </Principal>
-            <Dependent Role="Bookings">
-              <PropertyRef Name="customerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="BookingDBEntities" annotation:LazyLoadingEnabled="false">
           <EntitySet Name="AllSeats" EntityType="Self.AllSeats" />
-          <EntitySet Name="Bookings" EntityType="Self.Bookings" />
           <EntitySet Name="Customers" EntityType="Self.Customers" />
           <EntitySet Name="Lounges" EntityType="Self.Lounges" />
           <AssociationSet Name="FK__AllSeats__lounge__48CFD27E" Association="Self.FK__AllSeats__lounge__48CFD27E">
             <End Role="Lounges" EntitySet="Lounges" />
             <End Role="AllSeats" EntitySet="AllSeats" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Bookings__allSea__49C3F6B7" Association="Self.FK__Bookings__allSea__49C3F6B7">
-            <End Role="AllSeats" EntitySet="AllSeats" />
-            <End Role="Bookings" EntitySet="Bookings" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Bookings__custom__47DBAE45" Association="Self.FK__Bookings__custom__47DBAE45">
-            <End Role="Customers" EntitySet="Customers" />
-            <End Role="Bookings" EntitySet="Bookings" />
           </AssociationSet>
           <EntitySet Name="MovieShowings" EntityType="BookingDBModel.MovieShowings" />
           <AssociationSet Name="FK__MovieShow__loung__48CFD27E" Association="BookingDBModel.FK__MovieShow__loung__48CFD27E">
@@ -283,6 +238,15 @@
           <AssociationSet Name="FK__UserAccou__custo__4AB81AF0" Association="BookingDBModel.FK__UserAccou__custo__4AB81AF0">
             <End Role="Customers" EntitySet="Customers" />
             <End Role="UserAccounts" EntitySet="UserAccounts" />
+          </AssociationSet>
+          <EntitySet Name="Bookings" EntityType="BookingDBModel.Bookings" />
+          <AssociationSet Name="FK__Bookings__allSea__47DBAE45" Association="BookingDBModel.FK__Bookings__allSea__47DBAE45">
+            <End Role="AllSeats" EntitySet="AllSeats" />
+            <End Role="Bookings" EntitySet="Bookings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Bookings__custom__45F365D3" Association="BookingDBModel.FK__Bookings__custom__45F365D3">
+            <End Role="Customers" EntitySet="Customers" />
+            <End Role="Bookings" EntitySet="Bookings" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="MovieShowings">
@@ -353,6 +317,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Bookings">
+          <Key>
+            <PropertyRef Name="bookingId" />
+          </Key>
+          <Property Name="bookingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="customerId" Type="Int32" />
+          <Property Name="bookingForDate" Type="DateTime" Precision="3" />
+          <Property Name="bookingMadeDate" Type="DateTime" Precision="3" />
+          <Property Name="allSeatsId" Type="Int32" />
+          <NavigationProperty Name="AllSeats" Relationship="BookingDBModel.FK__Bookings__allSea__47DBAE45" FromRole="Bookings" ToRole="AllSeats" />
+          <NavigationProperty Name="Customers" Relationship="BookingDBModel.FK__Bookings__custom__45F365D3" FromRole="Bookings" ToRole="Customers" />
+        </EntityType>
+        <Association Name="FK__Bookings__allSea__47DBAE45">
+          <End Type="BookingDBModel.AllSeats" Role="AllSeats" Multiplicity="0..1" />
+          <End Type="BookingDBModel.Bookings" Role="Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AllSeats">
+              <PropertyRef Name="allSeatsId" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="allSeatsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Bookings__custom__45F365D3">
+          <End Type="BookingDBModel.Customers" Role="Customers" Multiplicity="0..1" />
+          <End Type="BookingDBModel.Bookings" Role="Bookings" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customers">
+              <PropertyRef Name="customerId" />
+            </Principal>
+            <Dependent Role="Bookings">
+              <PropertyRef Name="customerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -366,17 +366,6 @@
                 <ScalarProperty Name="loungeId" ColumnName="loungeId" />
                 <ScalarProperty Name="rowNumber" ColumnName="rowNumber" />
                 <ScalarProperty Name="seatNumber" ColumnName="seatNumber" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Bookings">
-            <EntityTypeMapping TypeName="BookingDBModel.Bookings">
-              <MappingFragment StoreEntitySet="Bookings">
-                <ScalarProperty Name="bookingId" ColumnName="bookingId" />
-                <ScalarProperty Name="customerId" ColumnName="customerId" />
-                <ScalarProperty Name="bookingForDate" ColumnName="bookingForDate" />
-                <ScalarProperty Name="bookingMadeDate" ColumnName="bookingMadeDate" />
-                <ScalarProperty Name="allSeatsId" ColumnName="allSeatsId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -424,6 +413,17 @@
                 <ScalarProperty Name="accountPassword" ColumnName="accountPassword" />
                 <ScalarProperty Name="accountName" ColumnName="accountName" />
                 <ScalarProperty Name="userAccountId" ColumnName="userAccountId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Bookings">
+            <EntityTypeMapping TypeName="BookingDBModel.Bookings">
+              <MappingFragment StoreEntitySet="Bookings">
+                <ScalarProperty Name="allSeatsId" ColumnName="allSeatsId" />
+                <ScalarProperty Name="bookingMadeDate" ColumnName="bookingMadeDate" />
+                <ScalarProperty Name="bookingForDate" ColumnName="bookingForDate" />
+                <ScalarProperty Name="customerId" ColumnName="customerId" />
+                <ScalarProperty Name="bookingId" ColumnName="bookingId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
