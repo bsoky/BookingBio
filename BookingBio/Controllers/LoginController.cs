@@ -7,18 +7,20 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using BookingBio.Managers;
 using BookingBio.Models;
 
 namespace BookingBio.Controllers
 {
+    
     public class LoginController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();
         private HttpRequestMessage msg = new HttpRequestMessage();
 
-        [Route("Login")]
+        [Route("login")]
         [HttpPost]
         [ResponseType(typeof(HttpResponseMessage))]
         public IHttpActionResult LoginUser(UserAccounts userInput) // LOGIN ACCOUNT
@@ -38,7 +40,7 @@ namespace BookingBio.Controllers
             }
 
             return Unauthorized(); // Returns if failed to verify account
-        }
+         }
 
         protected override void Dispose(bool disposing)
         {

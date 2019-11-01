@@ -215,6 +215,19 @@ namespace BookingBio.Managers
             return loginOk;
         }
 
+        public int GetAccountIdFromName (string accountName)
+        {
+            using (var db = new BookingDBEntities())
+            {
+
+                var userAccId = (from s in db.UserAccounts
+                                 where s.accountName == accountName
+                                 select s.userAccountId).FirstOrDefault();
+
+                return userAccId;
+            }
+        }
+
         private static string CreateSalt(int size) // Creates salt
         {
             //Generate a cryptographic random number.

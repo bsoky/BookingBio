@@ -46,5 +46,28 @@ namespace BookingBio.Managers
             showing.movieId = movieId;
             return showing;
         }
+        public int GetMovieIdFromName (string movieName)
+        {
+            using (var db = new BookingDBEntities())
+            {
+
+                var movieId = (from s in db.Movies
+                                 where s.movieName == movieName
+                                 select s.movieId).DefaultIfEmpty(0).FirstOrDefault();
+
+                return movieId;
+            }
+        }
+        public List<DateTime?> GetMovieShowingsFromMovieId(int movieIdInput)
+        {
+            using (var db = new BookingDBEntities())
+            {
+                var movieShowings = (from s in db.MovieShowings
+                               where s.movieId == movieIdInput
+                               select s.movieShowingTime).ToList();
+                return movieShowings;
+            }
+        }
     }
+
 }
