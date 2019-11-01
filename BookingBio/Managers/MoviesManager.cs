@@ -62,10 +62,19 @@ namespace BookingBio.Managers
         {
             using (var db = new BookingDBEntities())
             {
-                var movieShowings = (from s in db.MovieShowings
-                               where s.movieId == movieIdInput
-                               select s.movieShowingTime).ToList();
-                return movieShowings;
+                List<DateTime?> movieShowings = new List<DateTime?>();
+                try
+                {
+                    movieShowings = (from s in db.MovieShowings
+                                         where s.movieId == movieIdInput
+                                         select s.movieShowingTime).ToList();
+                    return movieShowings;
+                }
+                catch
+                {
+                    return movieShowings;
+                }
+                
             }
         }
     }
