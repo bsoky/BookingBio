@@ -22,11 +22,7 @@ namespace BookingBio.Models.DTOs
         public string RowNumber { get; set; }
         public int SeatNumber { get; set; }
         //Login
-        public string LoginToken { get; set; }
-        //Movies
-        public string MovieName { get; set; }
-
-
+        public string LoginToken { get; set; }      
 
     }
 }
