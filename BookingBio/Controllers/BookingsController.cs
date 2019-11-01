@@ -54,16 +54,15 @@ namespace BookingBio.Controllers
             CustomerManager cmgr = new CustomerManager();
             BookingManager bmgr = new BookingManager();
             UserAccountsManager umgr = new UserAccountsManager();
-
+            DateTime currentDate = DateTime.Now;
             var loginOk = umgr.CheckIfUserIsLoggedIn(booking.LoginToken); // token passed from frontend to check if user is logged in, token variabel content?
                 if (loginOk.Equals(false))
             {
                 httpResponse.ChangeHTTPMessage("User is not logged in!", msg);
                 return httpResponse;
             };
-            var convertedForDate = bmgr.DateTimeConverter(booking.BookingForDate); // Converting dates into DateTime objects
-            var convertedMadeDate = bmgr.DateTimeConverter(booking.BookingMadeDate);
-                if (convertedForDate.Equals(null)||convertedMadeDate.Equals(null)) // checking if date input is valid
+            var convertedForDate = bmgr.DateTimeConverter(booking.BookingForDate); // Converting dates into DateTime objects          
+                if (convertedForDate.Equals(null)) // checking if date input is valid
             {
                 httpResponse.ChangeHTTPMessage("Date input is not correct!", msg);
                 return httpResponse;
@@ -76,7 +75,7 @@ namespace BookingBio.Controllers
                 return httpResponse;
             }
             var custEntity = cmgr.GetCustomerEntity(booking.Email); // gets customer entity from email input
-            var bookingEntity = bmgr.UserAccountBooking(allSeatsId, custEntity, convertedForDate, convertedMadeDate);
+            var bookingEntity = bmgr.UserAccountBooking(allSeatsId, custEntity, convertedForDate, currentDate);
      
             db.Bookings.Add(bookingEntity);
             db.SaveChanges();
