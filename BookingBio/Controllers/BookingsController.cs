@@ -27,23 +27,37 @@ namespace BookingBio.Controllers
             return db.Bookings;
         }
 
-        // GET: api/Bookings/5
-        [ResponseType(typeof(Bookings))]
-        public IHttpActionResult GetBookings(int id)
+        [Route("GetAvailableSeats")]
+        [HttpPost]
+        [ResponseType(typeof(SeatAndRowDTO))]
+        public IHttpActionResult GetAvailableSeats(DateAndLoungeDTO dateAndLounge) // GETS AVAILABLE SEATS
         {
-            Bookings bookings = db.Bookings.Find(id);
-            if (bookings == null)
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                return BadRequest(ModelState);
             }
+            TextResult httpResponse = new TextResult("", msg);
+            SeatManager smgr = new SeatManager();
+            CustomerManager cmgr = new CustomerManager();
+            BookingManager bmgr = new BookingManager();
+            UserAccountsManager umgr = new UserAccountsManager();
+            SeatAndRowDTO seatAndRowLists = new SeatAndRowDTO();
+            DateTime currentDate = DateTime.Now;
+            var convertedBookingDate = bmgr.DateTimeConverter(dateAndLounge.BookingForDate); // Conert to datetime object
+            var seatsList = smgr.GetAllSeatsInList(dateAndLounge.LoungeId); // get AllSeatsIds from AllSeats and puts in list
+            var bookedSeatsList = smgr.GetAllBookedSeatFromDate(convertedBookingDate); // Gets AllseatsIds from Bookings from a date
+            var availableSeatsIdList = smgr.CompareAllSeatsAndBookedSeats(seatsList, bookedSeatsList); // compares AllSeats and Booked seat and return difference
+            var (rowList, seatList) = smgr.GetUnbookedAllSeatIdsFromAllSeats(availableSeatsIdList); // Gets row and seat from available seats and puts in lists
+            seatAndRowLists.Row = rowList;
+            seatAndRowLists.SeatNumber = seatList;
 
-            return Ok(bookings);
+            return Ok(seatAndRowLists); // Returns available seats
         }
 
         [Route("Bookings/UserBooking")]
         [HttpPost]
         [ResponseType(typeof(UserAccountBookingDTO))]
-        public IHttpActionResult UserAccountBooking(UserAccountBookingDTO booking) // BOOKING WITH USER ACCOUNT, TODO
+        public IHttpActionResult UserAccountBooking(UserAccountBookingDTO booking) // BOOKING WITH USER ACCOUNT, NOT FINISHED
         {
             if (!ModelState.IsValid)
             {
@@ -103,13 +117,7 @@ namespace BookingBio.Controllers
             int? customerId = null;
             DateTime currentDate = DateTime.Now;
             var convertedForDate = bmgr.DateTimeConverter(booking.BookingForDate); // Convert dates passed from fronted to DateTime objects                        
-            int? allSeatsId = smgr.GetSeatPlacementId(booking.RowNumber, booking.SeatNumber); // Gets the allSeatsId from AllSeats from row and seatnumber
-            int bookingId= smgr.CheckIfSeatIsTaken(convertedForDate, allSeatsId); // checks if seat is taken, returns bookingId                   
-            if (bookingId!=0)
-            {
-                httpResponse.ChangeHTTPMessage("That seat is taken!", msg); // http response if seat is taken
-                return httpResponse;
-            }           
+            int? allSeatsId = smgr.GetSeatPlacementId(booking.RowNumber, booking.SeatNumber); // Gets the allSeatsId from AllSeats from row and seatnumber                     
             try
             {
                 custEntity = cmgr.AddCustomer(booking.Email); // try to create new customer entity

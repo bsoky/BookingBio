@@ -19,11 +19,12 @@ namespace BookingBio.Managers
 
         }
        
-        public List<int?> GetAllSeatsInList() // Gets alleatIds from AllSeats in a list
+        public List<int?> GetAllSeatsInList(int loungeId) // Gets allSeatIds from AllSeats in a list
         {           
             using (var db = new BookingDBEntities())
             {
-                var list = (from s in db.AllSeats                           
+                var list = (from s in db.AllSeats
+                            where s.loungeId == loungeId
                             select (int?)s.allSeatsId).ToList();
 
                 return list;
@@ -54,5 +55,71 @@ namespace BookingBio.Managers
             }
             return allSeatId;
         }
+
+        public List<int?> GetAllAvailableSeats (List<int?> allSeatsList)
+        {
+            List<int?> availableSeats = new List<int?>();
+
+
+            return availableSeats;
+        }
+
+        public List<int?> GetAllBookedSeatFromDate (DateTime showingDate) // Gets allSeatsIds from Bookings and puts in list
+        {
+            List<int?> bookedSeatsList = new List<int?>();
+
+            using (var db = new BookingDBEntities())
+            {
+                bookedSeatsList = (from s in db.Bookings
+                                   where s.bookingForDate == showingDate
+                                   select (int?)s.allSeatsId).ToList();
+                return bookedSeatsList;
+            }
+
+        }
+        public List<int?> CompareAllSeatsAndBookedSeats (List<int?> allSeats, List<int?> bookedSeats) // Compares allSeatsIds and bookedSeatsIds and return the difference
+        {
+            List<int?> availableSeatsId = new List<int?>();
+            using (var db = new BookingDBEntities())
+            {
+                availableSeatsId = allSeats.Except(bookedSeats).ToList();
+                return availableSeatsId;
+            }
+        }
+        public (List<string> rowList, List<int?> seatList) GetUnbookedAllSeatIdsFromAllSeats (List<int?> availableSeatsIdList) // Gets the seat and row from Allseats, from the availableSeatIds
+        {
+            List<string> rowList = new List<string>();
+            List<int?> seatList = new List<int?>();
+
+            using (var db = new BookingDBEntities())
+            {
+                foreach (int? element in availableSeatsIdList) // gets the row from AllSeats and puts in list
+                {
+                    var row = (from s in db.AllSeats
+                                       where s.allSeatsId == element
+                                       select s.rowNumber).ToList();
+                    string convRow = row.First<string>();
+                    rowList.Add(convRow);
+                }
+                foreach (int? element in availableSeatsIdList) // gets seatNumber from ALlSeats and puts in list
+                {
+                    var seatNumber = (from s in db.AllSeats
+                               where s.allSeatsId == element
+                               select (int?)s.seatNumber).ToList();
+                    int? convSeat = seatNumber.First<int?>();
+                    seatList.Add(convSeat);
+                }
+
+                return (rowList, seatList);
+            }
+
+        }
+        public static int? ParseToNullableInt(string value)
+        {
+            return String.IsNullOrEmpty(value) ? null : (int.Parse(value) as int?);
+        }
+
+
     }
+
 }

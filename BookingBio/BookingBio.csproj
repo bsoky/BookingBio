@@ -220,9 +220,11 @@
     <Compile Include="Models\DTOs\AccountNameDTO.cs" />
     <Compile Include="Models\DTOs\ChangePasswordDTO.cs" />
     <Compile Include="Models\DTOs\CustomerBookingDTO.cs" />
+    <Compile Include="Models\DTOs\DateAndLoungeDTO.cs" />
     <Compile Include="Models\DTOs\MovieNameDTO.cs" />
     <Compile Include="Models\DTOs\MovieShowingDTO.cs" />
     <Compile Include="Models\DTOs\MovieShowingTimeDTO.cs" />
+    <Compile Include="Models\DTOs\SeatAndRowDTO.cs" />
     <Compile Include="Models\DTOs\UpdateAccountDTO.cs" />
     <Compile Include="Models\DTOs\RegistrationDTO.cs" />
     <Compile Include="Models\DTOs\UserAccountBookingDTO.cs" />
