@@ -76,6 +76,7 @@ namespace BookingBio.Controllers
         }
 
         // POST: api/Movies
+        [Route("addmovie")]
         [ResponseType(typeof(Movies))]
         public IHttpActionResult PostMovies(Movies movies) // ADD NEW MOVIE TO DATABASE
         {
