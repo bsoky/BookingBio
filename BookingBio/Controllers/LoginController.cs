@@ -33,10 +33,10 @@ namespace BookingBio.Controllers
 
             UserAccountsManager umgr = new UserAccountsManager();
             bool loginOk = umgr.Login(userInput.accountName, userInput.accountPassword); // Login function, returns bool
-
+            string token = umgr.CreateToken(userInput.accountName);
             if (loginOk.Equals(true)) // If bool is true, return Ok(200) http response
             {
-                return Ok();
+                return Ok(token);
             }
 
             return Unauthorized(); // Returns if failed to verify account
