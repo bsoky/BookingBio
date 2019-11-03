@@ -83,6 +83,10 @@ namespace BookingBio.Managers
             try
             {
                 salt = GetUserSalt(accountNameInput); // Get salt from DB with UserAccountName
+                if (salt is null)
+                {
+                    return loginOk = false;
+                }
                 passwordInDb = GetPassword(accountNameInput); // Gets hashed password from DB
                 hashedPassword = HashPassword(salt, accountPasswordInput); // Concatenates password input and salt and runs algorithm
             }
@@ -133,14 +137,22 @@ namespace BookingBio.Managers
 
         public string GetUserSalt(string accountNameInput) // Gets salt from DB
         {
+            string salt = null;
             using (var db = new BookingDBEntities())
             {
-
-                var salt = db.UserAccounts
+                try
+                {
+                    salt = db.UserAccounts
                               .Where(s => s.accountName == accountNameInput)
                               .Select(s => s.salt)
                               .FirstOrDefault()
                               .ToString();
+                }
+                catch
+                {
+                    return salt;
+                }
+                
                 return salt;
             }
         }
@@ -258,7 +270,13 @@ namespace BookingBio.Managers
         }
         public string CreateToken (string accountName)
         {
-            string salt = accountName.Substring(0, 5);
+            UserAccountsManager umgr = new UserAccountsManager();
+
+            string salt = umgr.GetUserSalt(accountName);
+            if (salt is null)
+            {
+                return salt;
+            }
             string hashedToken = HashPassword(salt, accountName);
             return hashedToken;
         }
