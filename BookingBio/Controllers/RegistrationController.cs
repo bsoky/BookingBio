@@ -70,9 +70,9 @@ namespace BookingBio.Controllers
                 httpResponse.ChangeHTTPMessage("Failed to create account!", msg); // HTTP response if fails to savechanges to DB
                 return httpResponse;
             }
-
-            httpResponse.ChangeHTTPMessage("Account created!", msg);
-            return httpResponse;
+            string token = umgr.CreateToken(userInput.AccountName);
+            
+            return Ok(token); // returns login token if registration succesfull
         }
 
 

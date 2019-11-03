@@ -256,6 +256,12 @@ namespace BookingBio.Managers
             }
             return hash.ToString();
         }
+        public string CreateToken (string accountName)
+        {
+            string salt = accountName.Substring(0, 5);
+            string hashedToken = HashPassword(salt, accountName);
+            return hashedToken;
+        }
 
         
 
