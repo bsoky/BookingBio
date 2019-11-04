@@ -39,8 +39,8 @@ namespace BookingBio.Controllers
             int movieId = mmgr.GetMovieIdFromName(movie.MovieName);
             if (movieId == 0)
             {
-                TextResult failedToFindMovie = new TextResult("Movie does not exist!", msg);
-                return failedToFindMovie;
+                TextResult failedToFindMovieShowing = new TextResult("Movieshowing does not exist!", msg);
+                return failedToFindMovieShowing;
             }
             var movieList = mmgr.GetMovieShowingsFromMovieId(movieId); // Gets movieshowingtimes and puts in list                    
             return Ok(movieList); 
@@ -118,19 +118,28 @@ namespace BookingBio.Controllers
         }
 
         // DELETE: api/MovieShowings/5
+        [Route("deletemovieshowings")]
         [ResponseType(typeof(MovieShowings))]
-        public IHttpActionResult DeleteMovieShowings(int id)
+        public IHttpActionResult DeleteMovieShowings(MovieNameDTO movie)
         {
-            MovieShowings movieShowings = db.MovieShowings.Find(id);
-            if (movieShowings == null)
+            TextResult httpResponse = new TextResult("Could not delete movieshowing!", msg);
+            MoviesManager mmgr = new MoviesManager();
+            int movieId = mmgr.GetMovieIdFromName(movie.MovieName);       
+            if (movieId == 0)
             {
                 return NotFound();
             }
+            try
+            {
+                db.MovieShowings.RemoveRange(db.MovieShowings.Where(x => x.movieId == movieId));
+                db.SaveChanges();
+            } catch
+            {
+                return httpResponse;
+            }
+            
 
-            db.MovieShowings.Remove(movieShowings);
-            db.SaveChanges();
-
-            return Ok(movieShowings);
+            return Ok();
         }
 
         protected override void Dispose(bool disposing)
