@@ -16,7 +16,7 @@ using BookingBio.Models.DTOs;
 
 namespace BookingBio.Controllers
 {
-    
+    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
     public class MovieShowingsController : ApiController
     {
         
@@ -29,8 +29,9 @@ namespace BookingBio.Controllers
             return db.MovieShowings;
         }
 
-        // GET: api/MovieShowings/5
+        
         [Route("movieshowings")]
+        [HttpPost]
         [ResponseType(typeof(MovieShowingTimeDTO))]
         public IHttpActionResult GetMovieShowings(MovieNameDTO movie) // GETS MOVIESHOWINGS
         {

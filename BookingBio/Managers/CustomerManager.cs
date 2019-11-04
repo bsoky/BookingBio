@@ -108,5 +108,17 @@ namespace BookingBio.Managers
                 return false;
             }
         }
+        public string GetCustomerEmailFromAccountName(int custId)
+        {
+            
+            using (var db = new BookingDBEntities())
+            {
+                var email = (from s in db.Customers
+                             where s.customerId == custId
+                             select s.email).FirstOrDefault();
+
+                return email;
+            }
+        }
     }
 }

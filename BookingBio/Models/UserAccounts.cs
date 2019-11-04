@@ -17,7 +17,7 @@ namespace BookingBio.Models
         public int userAccountId { get; set; }
         public string accountName { get; set; }
         public string accountPassword { get; set; }
-        public Nullable<int> customerId { get; set; }
+        public int customerId { get; set; }
         public string customerName { get; set; }
         public string phoneNumber { get; set; }
         public string salt { get; set; }

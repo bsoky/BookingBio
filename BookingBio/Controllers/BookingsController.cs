@@ -15,7 +15,7 @@ using BookingBio.Models.DTOs;
 
 namespace BookingBio.Controllers
 {
-   
+    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
     public class BookingsController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();
@@ -69,12 +69,12 @@ namespace BookingBio.Controllers
             BookingManager bmgr = new BookingManager();
             UserAccountsManager umgr = new UserAccountsManager();
             DateTime currentDate = DateTime.Now;
-            var loginOk = umgr.CheckIfUserIsLoggedIn(booking.LoginToken); // token passed from frontend to check if user is logged in, token variabel content?
-                if (loginOk.Equals(false))
-            {
-                httpResponse.ChangeHTTPMessage("User is not logged in!", msg);
-                return httpResponse;
-            };
+            //var loginOk = umgr.CheckIfUserIsLoggedIn(booking.LoginToken); // token passed from frontend to check if user is logged in, token variabel content?
+            //    if (loginOk.Equals(false))
+            //{
+            //    httpResponse.ChangeHTTPMessage("User is not logged in!", msg);
+            //    return httpResponse;
+            //};
             var convertedForDate = bmgr.DateTimeConverter(booking.BookingForDate); // Converting dates into DateTime objects          
                 if (convertedForDate.Equals(null)) // checking if date input is valid
             {
@@ -88,8 +88,9 @@ namespace BookingBio.Controllers
                 httpResponse.ChangeHTTPMessage("That seat is taken!", msg); // http response if seat is taken
                 return httpResponse;
             }
-            var custEntity = cmgr.GetCustomerEntity(booking.Email); // gets customer entity from email input
-            var bookingEntity = bmgr.UserAccountBooking(allSeatsId, custEntity, convertedForDate, currentDate);
+            var custId = umgr.GetCustomerIdFromUserAccountName(booking.AccountName);
+            var email = cmgr.GetCustomerEmailFromAccountName(custId);
+            var bookingEntity = bmgr.UserAccountBooking(allSeatsId, custId, convertedForDate, currentDate);
      
             db.Bookings.Add(bookingEntity);
             db.SaveChanges();
