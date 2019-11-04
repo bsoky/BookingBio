@@ -17,7 +17,7 @@ namespace BookingBio
             config.MapHttpAttributeRoutes();
             //var cors = new EnableCorsAttribute("http://localhost:3000", "*", "*");
             //config.EnableCors(cors);
-            config.EnableCors(new EnableCorsAttribute("http://localhost:3000", "*", "*"));
+            //config.EnableCors(new EnableCorsAttribute("", "*", "*"));
 
 
             config.Routes.MapHttpRoute(
@@ -29,7 +29,7 @@ namespace BookingBio
             config.MessageHandlers.Add(new ThrottlingHandler()
             {
                 // Generic rate limit applied to ALL APIs
-                Policy = new ThrottlePolicy(perSecond: 1, perMinute: 20, perHour: 200)
+                Policy = new ThrottlePolicy(perSecond: 2, perMinute: 20, perHour: 200)
                 {
                     IpThrottling = true,
                     ClientThrottling = true,
