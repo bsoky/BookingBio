@@ -11,10 +11,10 @@ using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using BookingBio.Managers;
 using BookingBio.Models;
-
 namespace BookingBio.Controllers
 {
-    
+
+   
     public class LoginController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();

@@ -1,4 +1,4 @@
-	USE BookingDB;
+USE BookingDB;
 
 CREATE TABLE Customers (
   customerId int PRIMARY KEY IDENTITY (1,1) NOT NULL  
@@ -42,7 +42,7 @@ CREATE TABLE UserAccounts (
   userAccountId int PRIMARY KEY IDENTITY (1,1) NOT NULL 
   ,accountName nvarchar(100) UNIQUE NOT NULL
   ,accountPassword nvarchar(400) NOT NULL
-  ,customerId int
+  ,customerId int NOT NULL
   ,customerName varchar(255)
   ,phoneNumber nvarchar(30) 
   ,salt nvarchar(100)

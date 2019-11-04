@@ -15,7 +15,7 @@ using BookingBio.Models.DTOs;
 
 namespace BookingBio.Controllers
 {
-    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class BookingsController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();
