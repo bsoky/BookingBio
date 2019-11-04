@@ -28,54 +28,6 @@ namespace BookingBio.Controllers
             return db.Movies;
         }
 
-        // GET: api/Movies/5
-        [ResponseType(typeof(Movies))]
-        public IHttpActionResult GetMovies(int id)
-        {
-            Movies movies = db.Movies.Find(id);
-            if (movies == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(movies);
-        }
-
-        // PUT: api/Movies/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutMovies(int id, Movies movies)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != movies.movieId)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(movies).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MoviesExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
         // POST: api/Movies
         [Route("addmovie")]
         [ResponseType(typeof(Movies))]

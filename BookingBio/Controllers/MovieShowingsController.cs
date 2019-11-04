@@ -84,44 +84,7 @@ namespace BookingBio.Controllers
             httpResponse.ChangeHTTPMessage("Movieshowing added!", msg);
             return httpResponse;
         }
-
-
-        // PUT: api/MovieShowings/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutMovieShowings(int id, MovieShowings movieShowings)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != movieShowings.movieShowingsId)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(movieShowings).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MovieShowingsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        
+      
         // DELETE: api/MovieShowings/5
         [Route("deletemovieshowings")]
         [ResponseType(typeof(MovieShowings))]
