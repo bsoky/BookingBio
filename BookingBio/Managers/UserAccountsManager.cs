@@ -212,15 +212,16 @@ namespace BookingBio.Managers
             return passwordIsNotOk;
         }
 
-        public bool CheckIfUserIsLoggedIn(string loginToken)
+        public bool CheckIfUserIsLoggedIn(string userInputToken, string loginToken )
         {
             bool loginOk = false;
+            
 
-            if (loginToken is null || loginToken.Equals("")) // Token name and content?
+            if (userInputToken is null || userInputToken.Equals("")) // Token name and content?
                 {
                     loginOk = false;
                 }
-            if (loginToken.Equals("token")) // check if token exists
+            if (userInputToken.Equals(loginToken)) // check if token exists
             {
                 loginOk = true;
             }

@@ -12,6 +12,7 @@ using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using BookingBio.Managers;
 using BookingBio.Models;
+using BookingBio.Models.DTOs;
 
 namespace BookingBio.Controllers
 {
@@ -100,19 +101,32 @@ namespace BookingBio.Controllers
         }
 
         // DELETE: api/Movies/5
+        [HttpPost]
+        [Route("deletemovie")]
         [ResponseType(typeof(Movies))]
-        public IHttpActionResult DeleteMovies(int id)
+        public IHttpActionResult DeleteMovies(MovieNameDTO movie) // Deletes movie from db and any related movieshowings
         {
-            Movies movies = db.Movies.Find(id);
-            if (movies == null)
+
+            MoviesManager mmgr = new MoviesManager();
+            int movieId = mmgr.CheckIfMovieExists(movie.MovieName);
+            Movies movieEntity = db.Movies.Find(movieId);
+            if (movieEntity is null)
             {
                 return NotFound();
             }
+            try
+            {
+                db.MovieShowings.RemoveRange(db.MovieShowings.Where(x => x.movieId == movieId));
+                db.Movies.Remove(movieEntity);
+                db.SaveChanges();
+            } catch
+            {
+                return Ok();
+            }
+            TextResult couldNotDeleteMovieAndShowings = new TextResult("Could not delete movie!", msg);
+            return couldNotDeleteMovieAndShowings;
 
-            db.Movies.Remove(movies);
-            db.SaveChanges();
 
-            return Ok(movies);
         }
 
         protected override void Dispose(bool disposing)

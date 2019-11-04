@@ -56,7 +56,7 @@ namespace BookingBio.Controllers
 
         [Route("Bookings/UserBooking")]
         [HttpPost]
-        [ResponseType(typeof(UserAccountBookingDTO))]
+        [ResponseType(typeof(HttpResponseMessage))]
         public IHttpActionResult UserAccountBooking(UserAccountBookingDTO booking) // BOOKING WITH USER ACCOUNT, NOT FINISHED
         {
             if (!ModelState.IsValid)
@@ -68,13 +68,14 @@ namespace BookingBio.Controllers
             CustomerManager cmgr = new CustomerManager();
             BookingManager bmgr = new BookingManager();
             UserAccountsManager umgr = new UserAccountsManager();
-            DateTime currentDate = DateTime.Now;
-            //var loginOk = umgr.CheckIfUserIsLoggedIn(booking.LoginToken); // token passed from frontend to check if user is logged in, token variabel content?
-            //    if (loginOk.Equals(false))
-            //{
-            //    httpResponse.ChangeHTTPMessage("User is not logged in!", msg);
-            //    return httpResponse;
-            //};
+            DateTime currentDate = DateTime.Now;           
+            string token = umgr.CreateToken(booking.AccountName);
+            var loginOk = umgr.CheckIfUserIsLoggedIn(booking.LoginToken, token); // token passed from frontend to check if user is logged in, token variabel content?
+            if (loginOk.Equals(false))
+            {
+                httpResponse.ChangeHTTPMessage("User is not logged in!", msg);
+                return httpResponse;
+            };
             var convertedForDate = bmgr.DateTimeConverter(booking.BookingForDate); // Converting dates into DateTime objects          
                 if (convertedForDate.Equals(null)) // checking if date input is valid
             {
