@@ -299,7 +299,6 @@
     <Compile Include="Models\DTOs\DateAndLoungeDTO.cs" />
     <Compile Include="Models\DTOs\MovieNameDTO.cs" />
     <Compile Include="Models\DTOs\MovieShowingDTO.cs" />
-    <Compile Include="Models\DTOs\MovieShowingTimeDTO.cs" />
     <Compile Include="Models\DTOs\SeatAndRowDTO.cs" />
     <Compile Include="Models\DTOs\UpdateAccountDTO.cs" />
     <Compile Include="Models\DTOs\RegistrationDTO.cs" />

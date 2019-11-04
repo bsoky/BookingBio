@@ -32,7 +32,7 @@ namespace BookingBio.Controllers
         
         [Route("movieshowings")]
         [HttpPost]
-        [ResponseType(typeof(MovieShowingTimeDTO))]
+        [ResponseType(typeof(MovieShowingDTO))]
         public IHttpActionResult GetMovieShowings(MovieNameDTO movie) // GETS MOVIESHOWINGS
         {
             MoviesManager mmgr = new MoviesManager();
@@ -45,6 +45,46 @@ namespace BookingBio.Controllers
             var movieList = mmgr.GetMovieShowingsFromMovieId(movieId); // Gets movieshowingtimes and puts in list                    
             return Ok(movieList); 
         }
+        // POST: api/MovieShowings
+        [Route("addmovieshowing")]
+        [ResponseType(typeof(MovieShowingDTO))]
+        public IHttpActionResult PostMovieShowings(MovieShowingDTO movieShowings) // ADD NEW MOVIE SHOWING
+        {
+            MoviesManager mvmgr = new MoviesManager();
+            BookingManager bmgr = new BookingManager();
+            TextResult httpResponse = new TextResult("", msg);
+            DateTime convertedShowingDate = new DateTime();
+
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            convertedShowingDate = bmgr.DateTimeConverter(movieShowings.MovieShowingTime);
+            int? showingExists = mvmgr.CheckIfMovieShowingExists(convertedShowingDate); // Checks if movieshowing already exists
+            if (showingExists != 0)
+            {
+                httpResponse.ChangeHTTPMessage("Showing already exists on that date!", msg); // http response
+                return httpResponse;
+            }
+            int? movieId = mvmgr.CheckIfMovieExists(movieShowings.MovieName);
+
+            var movieShowingEntity = mvmgr.AddNewMovieShowing(convertedShowingDate, movieId, movieShowings.LoungeId); // creates movieshowing entity
+            try
+            {
+                db.MovieShowings.Add(movieShowingEntity);
+                db.SaveChanges();
+            }
+            catch
+            {
+                httpResponse.ChangeHTTPMessage("Movieshowing could not be added!", msg);
+                return httpResponse;
+            }
+
+            httpResponse.ChangeHTTPMessage("Movieshowing added!", msg);
+            return httpResponse;
+        }
+
 
         // PUT: api/MovieShowings/5
         [ResponseType(typeof(void))]
@@ -81,42 +121,7 @@ namespace BookingBio.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // POST: api/MovieShowings
-        [ResponseType(typeof(MovieShowingDTO))]
-        public IHttpActionResult PostMovieShowings(MovieShowingDTO movieShowings) // ADD NEW MOVIE SHOWING
-        {
-            MoviesManager mvmgr = new MoviesManager();
-            BookingManager bmgr = new BookingManager();
-            TextResult httpResponse = new TextResult("", msg);
-            DateTime convertedShowingDate = new DateTime();
-
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            convertedShowingDate = bmgr.DateTimeConverter(movieShowings.movieShowingTime);
-            int? showingExists = mvmgr.CheckIfMovieShowingExists(convertedShowingDate); // Checks if movieshowing already exists
-            if (showingExists!= 0)
-            {
-                httpResponse.ChangeHTTPMessage("Showing already exists on that date!", msg); // http response
-                return httpResponse;
-            }
-            var movieShowingEntity = mvmgr.AddNewMovieShowing(convertedShowingDate, movieShowings.loungeId, movieShowings.movieId); // creates moieshowing entity
-            try
-            {
-                db.MovieShowings.Add(movieShowingEntity);
-                db.SaveChanges();
-            } catch
-            {
-                httpResponse.ChangeHTTPMessage("Movieshowing could not be added!", msg);
-                return httpResponse;
-            }
-            
-            httpResponse.ChangeHTTPMessage("Movieshowing added!", msg);
-            return httpResponse;
-        }
-
+        
         // DELETE: api/MovieShowings/5
         [Route("deletemovieshowings")]
         [ResponseType(typeof(MovieShowings))]
