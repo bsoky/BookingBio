@@ -280,6 +280,18 @@ namespace BookingBio.Managers
             string hashedToken = HashPassword(salt, accountName);
             return hashedToken;
         }
+        public int GetCustomerIdFromUserAccountName (string accountName)
+        {
+            using (var db = new BookingDBEntities())
+            {
+
+                var userAccId = (from s in db.UserAccounts
+                                 where s.accountName == accountName
+                                 select s.customerId).FirstOrDefault();
+
+                return userAccId;
+            }
+        }
 
         
 
