@@ -27,54 +27,6 @@ namespace BookingBio.Controllers
             return db.Customers;
         }
 
-        // GET: api/Customers/5
-        [ResponseType(typeof(Customers))]
-        public IHttpActionResult GetCustomers(int id)
-        {
-            Customers customers = db.Customers.Find(id);
-            if (customers == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(customers);
-        }
-
-        // PUT: api/Customers/5
-        [ResponseType(typeof(void))]
-        public IHttpActionResult PutCustomers(int id, Customers customers)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != customers.customerId)
-            {
-                return BadRequest();
-            }
-
-            db.Entry(customers).State = EntityState.Modified;
-
-            try
-            {
-                db.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomersExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return StatusCode(HttpStatusCode.NoContent);
-        }
-
         // POST: api/Customers
         [ResponseType(typeof(Customers))]
         public IHttpActionResult PostCustomers(Customers customers) // Adds new customer

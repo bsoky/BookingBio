@@ -137,19 +137,6 @@ namespace BookingBio.Controllers
             httpResponse.ChangeHTTPMessage("Password not correct!", msg); // if input password and password from DB do not match
             return httpResponse;
         }
-        // GET: api/UserAccounts/5
-        [ResponseType(typeof(UserAccounts))]
-        public IHttpActionResult GetUserAccounts(int id)
-        {
-
-            UserAccounts userAccounts = db.UserAccounts.Find(id);
-            if (userAccounts == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(userAccounts);
-        }
        
         [Route("UserAccounts/deleteaccount")]
         [ResponseType(typeof(UserAccounts))]
