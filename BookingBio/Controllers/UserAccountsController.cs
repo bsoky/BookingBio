@@ -12,11 +12,12 @@ using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Description;
 using System.Data.Entity.Validation;
-using System.Web.Http.Cors;
+
 
 namespace BookingBio.Controllers
 {
- 
+
+    
     public class UserAccountsController : ApiController
     {
         private BookingDBEntities db = new BookingDBEntities();

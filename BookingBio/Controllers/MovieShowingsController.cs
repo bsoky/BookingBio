@@ -8,7 +8,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.Http.Cors;
+
 using System.Web.Http.Description;
 using BookingBio.Managers;
 using BookingBio.Models;
@@ -16,7 +16,7 @@ using BookingBio.Models.DTOs;
 
 namespace BookingBio.Controllers
 {
-    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
+    
     public class MovieShowingsController : ApiController
     {
         

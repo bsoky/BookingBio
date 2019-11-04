@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
-using System.Web.Http.Cors;
+
 using WebApiThrottle;
+using System.Web.Http.Cors;
 
 namespace BookingBio
 {
@@ -11,12 +12,13 @@ namespace BookingBio
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
 
-            // Web API routes
+            // Web API configuration and services
             config.MapHttpAttributeRoutes();
-            var cors = new EnableCorsAttribute("http://localhost:3000", "*", "*");
-            config.EnableCors(cors);
+            //var cors = new EnableCorsAttribute("http://localhost:3000", "*", "*");
+            //config.EnableCors(cors);
+            config.EnableCors(new EnableCorsAttribute("http://localhost:3000", "*", "*"));
+
 
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
@@ -41,12 +43,7 @@ namespace BookingBio
                 Repository = new CacheRepository()
             });
 
-
-
-
-
-
-
         }
+       
     }
 }
